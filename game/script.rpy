@@ -5,7 +5,7 @@
 # -----------------------------------------------
 define e       = Character("Director",    color="#2a23a3")
 define catlord = Character("catlord",     image="catlord.png", color="#15d815")
-define m       = Character("Meow Khiao",  color="#32CD32")
+define m       = Character("mc",   image="Tmp_mc.png", color="#32CD32")
 define c       = Character("อสูรคาร์บอน", color="#FF0000")
 
 # -----------------------------------------------
@@ -34,28 +34,28 @@ screen trash_sorting_minigame(trash_item, trash_image):
             drag_name "yellow_bin"
             child "bin_yellow.png"
             draggable False
-            xpos 100 ypos 500
+            xpos 300 ypos 500
 
         # ถังสีเขียว (อินทรีย์)
         drag:
             drag_name "green_bin"
             child "bin_green.png"
             draggable False
-            xpos 400 ypos 500
+            xpos 700 ypos 500
 
         # ถังสีแดง (อันตราย)
         drag:
             drag_name "red_bin"
             child "bin_red.png"
             draggable False
-            xpos 700 ypos 500
+            xpos 1100 ypos 500
 
         # ถังสีน้ำเงิน (ทั่วไป)
         drag:
             drag_name "blue_bin"
             child "bin_blue.png"
             draggable False
-            xpos 1000 ypos 500
+            xpos 1500 ypos 500
 
         # ขยะ (สิ่งที่ต้องลาก)
         drag:
@@ -63,7 +63,7 @@ screen trash_sorting_minigame(trash_item, trash_image):
             child trash_image
             droppable False
             dragged trash_dropped
-            xpos 550 ypos 200
+            xpos 960 ypos 200
 
 
 # ===============================================
@@ -140,9 +140,9 @@ label intro:
     catlord "ปราบอสูรคาร์บอนให้ได้ และกอบกู้สยามให้กลับมาเขียวขจีอีกครั้ง!"
 
     scene scene_operatorroom
-    show lord command at center
+    show lord happy at center
 
-    catlord "ท่านพร้อมหรือยัง?"
+    catlord "ท่านพร้อมหรือยัง? ถ้าพร้อมแล้ว... เราจะเริ่มต้นการต่อสู้กับอสูรคาร์บอนกันเลยนะเมี้ยว!"
 
     jump gameplay_start
 
@@ -151,7 +151,7 @@ label intro:
 # เริ่มเกมจริง — Meow Khiao vs อสูรคาร์บอน
 # ===============================================
 label gameplay_start:
-
+    scene carbonmonster
     m "ในที่สุดก็มาถึงถนนพระราม 4... ที่นี่ขยะเกลื่อนกลาดไปหมดเลย!"
     c "ฮ่าๆๆ! ขยะพวกนี้แหละคือแหล่งพลังงานชั้นยอดของข้า!"
     m "เราต้องรีบแยกขยะให้ถูกต้อง ช่วยฉันลากขยะไปทิ้งให้ถูกถังทีนะ!"
@@ -164,6 +164,7 @@ label gameplay_start:
 # -----------------------------------------------
 label tutorial_1:
 
+    scene carbonmonster
     m "ชิ้นแรก! {b}ขวดพลาสติกใส (PET){/b} ลากไปทิ้งถังไหนดี?"
 
     call screen trash_sorting_minigame("plastic", "plastic_bottle.png")
@@ -183,6 +184,7 @@ label tutorial_1:
 # ด่านที่ 2 — แกนแอปเปิ้ล
 # -----------------------------------------------
 label tutorial_2:
+    scene carbonmonster
 
     m "ชิ้นต่อไป... {b}แกนแอปเปิ้ล{/b} ลากไปทิ้งเลย!"
 
@@ -203,6 +205,7 @@ label tutorial_2:
 # ด่านที่ 3 — ถ่านไฟฉายเก่า
 # -----------------------------------------------
 label tutorial_3:
+    scene carbonmonster
 
     m "ชิ้นสุดท้าย! {b}ถ่านไฟฉายเก่า{/b} อันตรายนะเนี่ย!"
 
@@ -215,6 +218,8 @@ label tutorial_3:
     else:
         m "อันตราย! ถ่านไฟฉายมีสารพิษ ต้องทิ้งถังสีแดงเท่านั้นนะ"
         c "พลังความสกปรกจงเจริญ!"
+
+
 
     if carbon_monster_hp <= 0:
         jump victory
@@ -229,6 +234,8 @@ label victory:
 
     c "ฝากไว้ก่อนเถอะ เจ้าแมวอาสาดิจิทัล!"
     m "เย้! เรากำจัดอสูรคาร์บอนสำเร็จแล้ว!"
+    m "กรุงเทพฯ จะกลับมาเขียวขจีอีกครั้ง!"
+    #textbutton "ไปยังเว็บไซต์" action OpenURL("https://youtu.be/by9eqSok6g8?si=2u50Yxg_ayIpgHEB")
     return
 
 
