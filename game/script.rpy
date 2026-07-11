@@ -7,6 +7,7 @@ define e       = Character("Director",    color="#2a23a3")
 define catlord = Character("catlord",     image="catlord.png", color="#15d815")
 define m       = Character("mc",   image="Tmp_mc.png", color="#32CD32")
 define c       = Character("อสูรคาร์บอน", color="#FF0000")
+define e = Character("Eileen")
 
 # -----------------------------------------------
 # ตัวแปรเกม
@@ -14,16 +15,35 @@ define c       = Character("อสูรคาร์บอน", color="#FF0000")
 default carbon_monster_hp = 3
 
 # -----------------------------------------------
-# 1. ฟังก์ชัน Python สำหรับตรวจสอบการลากวาง
+# ฟังก์ชัน Python สำหรับตรวจสอบการลากวาง
 # -----------------------------------------------
 init python:
+    
     def trash_dropped(drags, drop):
+        """
+        Check if a trash item has been dropped into a valid bin.
+        """
         if not drop:
             return None
         return drop.drag_name
 
+    # -----------------------------------------------
+# ฟังค์ชันเก็บเพลง (ปรับการประกาศตัวแปรตรงนี้)
 # -----------------------------------------------
-# 2. Screen สำหรับมินิเกมลากขยะ
+init offset = 1
+init python:
+    # ประกาศรายการเพลงตรงนี้ เพื่อให้มั่นใจว่า Ren'Py รู้จักคลาส Song เรียบร้อยแล้ว
+    rhythm_game_songs = [
+        Song('Final Lap Dash', 'audio/lapdash.mp3', 'audio/lapdash.beatmap.txt')
+    ]
+
+# สคริปต์จดจำ High Score สำหรับการแข่งขัน
+default persistent.rhythm_game_high_scores ={ 
+    song.name: (0, 0) for song in rhythm_game_songs
+}
+
+# -----------------------------------------------
+# Screen สำหรับมินิเกมลากขยะ
 # -----------------------------------------------
 screen trash_sorting_minigame(trash_item, trash_image):
 
@@ -64,6 +84,7 @@ screen trash_sorting_minigame(trash_item, trash_image):
             droppable False
             dragged trash_dropped
             xpos 960 ypos 200
+
 
 
 # ===============================================
@@ -236,7 +257,8 @@ label victory:
     m "เย้! เรากำจัดอสูรคาร์บอนสำเร็จแล้ว!"
     m "กรุงเทพฯ จะกลับมาเขียวขจีอีกครั้ง!"
     #textbutton "ไปยังเว็บไซต์" action OpenURL("https://youtu.be/by9eqSok6g8?si=2u50Yxg_ayIpgHEB")
-    return
+    
+    jump lumpini_park
 
 
 # -----------------------------------------------
@@ -247,3 +269,46 @@ label game_over:
     c "ฮ่าๆๆ! กรุงเทพฯ จะต้องจมอยู่ใต้กองขยะของข้า!"
     m "เมี๊ยว... เราจัดการขยะพลาดไป อสูรคาร์บอนเลยชนะ"
     return
+
+
+# ===============================================
+# SDG ด่านที่ rythms game — Lumpini Park
+# ===============================================
+
+# the song player choose to play "Lumpini Park" by default
+default selected_song = None
+
+
+label lumpini_park:
+    stop music
+    e "Welcome to the Ren'Py Rhythm Game! Choose a lofi song you'd like to play."
+
+    window hide
+    call rhythm_game_entry_label
+
+    e "Nice work hitting those notes! Hope you enjoyed the game."
+
+    return
+label rhthms_test:
+    e "Welcome to the Ren'Py Rhythm Game! Ready for a challenge?"
+    window hide
+    $ quick_menu = False
+
+    # avoid rolling back and losing chess game state
+    $ renpy.block_rollback()
+
+    $ song = Song('Isolation', 'audio/Isolation.mp3', 'audio/Isolation.beatmap.txt', beatmap_stride=2)
+    $ rhythm_game_displayable = RhythmGameDisplayable(song)
+    call screen rhythm_game(rhythm_game_displayable)
+
+    # avoid rolling back and entering the chess game again
+    $ renpy.block_rollback()
+
+    # restore rollback from this point on
+    $ renpy.checkpoint()
+
+    $ quick_menu = True
+    window show
+
+    return
+    
